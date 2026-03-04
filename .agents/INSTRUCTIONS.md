@@ -12,6 +12,7 @@
 
 ```ts
 import { Worker } from "@notionhq/workers";
+import * as j from "@notionhq/workers/schema-builder";
 
 const worker = new Worker();
 export default worker;
@@ -19,14 +20,16 @@ export default worker;
 worker.tool("sayHello", {
 	title: "Say Hello",
 	description: "Return a greeting",
-	schema: { type: "object", properties: { name: { type: "string" } }, required: ["name"], additionalProperties: false },
+	schema: j.object({
+		name: j.string().description("The name to greet"),
+	}),
 	execute: ({ name }, _context) => `Hello, ${name}`,
 });
 ```
 
 A worker with one or more tools is attachable to Notion agents. Each `tool` becomes a callable function for the agent:
 - `title` and `description` are used both in the Notion UI as well as a helpful description to your agent.
-- `schema` specifies what data the agent must supply.
+- `schema` specifies what data the agent must supply. Use the schema builder (`@notionhq/workers/schema-builder`) instead of raw JSON Schema objects — it provides autocompletion, type inference, and guarantees compliance with model provider constraints (auto `required`, `additionalProperties: false`, etc.).
 
 ### OAuth
 

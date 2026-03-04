@@ -31,6 +31,7 @@ You'll find a `Hello, world` example in `src/index.ts`:
 
 ```ts
 import { Worker } from "@notionhq/workers";
+import { j } from "@notionhq/workers/schema-builder";
 
 const worker = new Worker();
 export default worker;
@@ -38,14 +39,9 @@ export default worker;
 worker.tool("sayHello", {
 	title: "Say Hello",
 	description: "Returns a friendly greeting for the given name.",
-	schema: {
-		type: "object",
-		properties: {
-			name: { type: "string", description: "The name to greet." },
-		},
-		required: ["name"],
-		additionalProperties: false,
-	},
+	schema: j.object({
+		name: j.string().describe("The name to greet."),
+	}),
 	execute: ({ name }) => `Hello, ${name}!`,
 });
 ```
@@ -118,11 +114,7 @@ Use the token in your tools:
 worker.tool("getGitHubRepos", {
 	title: "Get GitHub Repos",
 	description: "Fetch user's GitHub repositories",
-	schema: {
-		type: "object",
-		properties: {},
-		additionalProperties: false,
-	},
+	schema: j.object({}),
 	execute: async () => {
 		const token = await githubAuth.accessToken();
 		const response = await fetch("https://api.github.com/user/repos", {
@@ -142,15 +134,10 @@ worker.tool("getGitHubRepos", {
 worker.tool("sendSMS", {
 	title: "Send SMS",
 	description: "Send a text message to a phone number",
-	schema: {
-		type: "object",
-		properties: {
-			to: { type: "string", description: "Phone number in E.164 format" },
-			message: { type: "string", description: "Message to send" },
-		},
-		required: ["to", "message"],
-		additionalProperties: false,
-	},
+	schema: j.object({
+		to: j.string().describe("Phone number in E.164 format"),
+		message: j.string().describe("Message to send"),
+	}),
 	execute: async ({ to, message }) => {
 		const response = await fetch(
 			`https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -185,14 +172,9 @@ worker.tool("sendSMS", {
 worker.tool("postToDiscord", {
 	title: "Post to Discord",
 	description: "Send a message to a Discord channel",
-	schema: {
-		type: "object",
-		properties: {
-			message: { type: "string", description: "Message to post" },
-		},
-		required: ["message"],
-		additionalProperties: false,
-	},
+	schema: j.object({
+		message: j.string().describe("Message to post"),
+	}),
 	execute: async ({ message }) => {
 		const response = await fetch(process.env.DISCORD_WEBHOOK_URL ?? "", {
 			method: "POST",
@@ -215,15 +197,10 @@ worker.tool("postToDiscord", {
 worker.tool("createPodcast", {
 	title: "Create Podcast from Page",
 	description: "Convert page content to audio using ElevenLabs",
-	schema: {
-		type: "object",
-		properties: {
-			content: { type: "string", description: "Page content to convert" },
-			voiceId: { type: "string", description: "ElevenLabs voice ID" },
-		},
-		required: ["content", "voiceId"],
-		additionalProperties: false,
-	},
+	schema: j.object({
+		content: j.string().describe("Page content to convert"),
+		voiceId: j.string().describe("ElevenLabs voice ID"),
+	}),
 	execute: async ({ content, voiceId }) => {
 		const response = await fetch(
 			`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
@@ -253,14 +230,9 @@ worker.tool("createPodcast", {
 worker.tool("getWeather", {
 	title: "Get Weather",
 	description: "Get current weather for a location",
-	schema: {
-		type: "object",
-		properties: {
-			location: { type: "string", description: "City name or zip code" },
-		},
-		required: ["location"],
-		additionalProperties: false,
-	},
+	schema: j.object({
+		location: j.string().describe("City name or zip code"),
+	}),
 	execute: async ({ location }) => {
 		const response = await fetch(
 			`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`,
