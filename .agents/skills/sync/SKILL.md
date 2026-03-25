@@ -11,9 +11,9 @@ allowed-tools: ["Read", "Edit", "Write", "Bash", "Glob", "Grep", "Agent"]
 You are helping the user create a new sync capability for their Notion Worker. Walk through each step, asking questions and making recommendations. Generate working code at the end.
 
 Before you begin, read these reference files to understand sync patterns:
-- `.claude/skills/sync-guide/SKILL.md` — concepts, modes, patterns, common mistakes
-- `.claude/skills/sync-guide/api-pagination-patterns.md` — real-world API strategies
-- `.claude/skills/sync-guide/examples/` — working code templates
+- `.agents/skills/sync-guide/SKILL.md` — concepts, modes, patterns, common mistakes
+- `.agents/skills/sync-guide/api-pagination-patterns.md` — real-world API strategies
+- `.agents/skills/sync-guide/examples/` — working code templates
 
 Also read the current `src/index.ts` to understand what already exists.
 
@@ -69,7 +69,7 @@ Guidelines:
   `Schema.checkbox()`, `Schema.select()` where the data type fits
 - Use `Schema.relation("otherSyncKey")` for cross-sync relations
 - Start with 10-20 properties — be generous, include most useful fields from the API
-- See the full type list in `.claude/skills/sync-guide/SKILL.md` under "Schema Reference"
+- See the full type list in `.agents/skills/sync-guide/SKILL.md` under "Schema Reference"
 
 Present the proposed schema to the user and ask if they want to add, remove,
 or change any fields before generating code.
@@ -179,7 +179,7 @@ is fine — proceed to deploy and test via dry-run (Step 8).
 
 ### Step 6: Generate the Code
 
-Write the sync into `src/index.ts`. Use the closest example from `.claude/skills/sync-guide/examples/` as a starting point:
+Write the sync into `src/index.ts`. Use the closest example from `.agents/skills/sync-guide/examples/` as a starting point:
 - `replace-simple.ts` — static data, no API
 - `replace-paginated.ts` — paginated replace mode
 - `incremental-basic.ts` — single cursor serves both phases
