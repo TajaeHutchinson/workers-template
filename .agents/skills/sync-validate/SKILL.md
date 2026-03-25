@@ -10,7 +10,7 @@ allowed-tools: ["Read", "Glob", "Grep", "Bash"]
 
 Read the sync capabilities in `src/index.ts` (and any imported modules). For each sync found, run through the checklist below. Report findings grouped by severity.
 
-Before starting, read `.claude/skills/sync-guide/SKILL.md` for the full sync concepts reference.
+Before starting, read `.agents/skills/sync-guide/SKILL.md` for the full sync concepts reference.
 
 ### Critical Issues (will break the sync or cause data loss)
 
