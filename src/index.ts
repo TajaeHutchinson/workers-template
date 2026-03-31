@@ -61,6 +61,21 @@ worker.tool("searchSpotifyMetadata", {
       .describe("The name of the artist or primary performer of the song."),
   }),
 
+  outputSchema: j.object({
+    track_name: j.string().describe("The name of the track on Spotify."),
+    artist: j.string().describe("The artist(s) name(s)."),
+    album: j.string().describe("The album or EP title."),
+    release_date: j.string().describe("The release date of the track."),
+    duration: j.string().describe("Track duration formatted as mm:ss."),
+    isrc: j.string().describe("The ISRC code for this recording."),
+    upc: j.string().describe("The UPC barcode for the album."),
+    bpm: j.string().describe("Tempo in beats per minute, rounded to nearest whole number."),
+    loudness: j.string().describe("Integrated loudness in dB as returned by Spotify."),
+    label: j.string().describe("The record label from the album."),
+    artwork_url: j.string().nullable().describe("URL to the album artwork image."),
+    spotify_url: j.string().nullable().describe("Direct Spotify link to the track."),
+  }),
+
   execute: async ({ song, artist }): Promise<string> => {
     // STEP 1 — Authenticate with Spotify
     let accessToken: string;
