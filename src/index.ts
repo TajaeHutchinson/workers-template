@@ -66,6 +66,7 @@ worker.tool("searchSpotifyTrack", {
         artist: j.string().describe("Artist name(s)."),
         album: j.string().describe("Album or EP title."),
         release_year: j.string().describe("Release year."),
+        isrc: j.string().describe("ISRC code for this recording — show this in the match list."),
         track_id: j.string().describe("Spotify track ID — needed for fetchSpotifyMetadata."),
         spotify_url: j.string().nullable().describe("Direct Spotify link."),
       })
@@ -105,15 +106,35 @@ worker.tool("searchSpotifyTrack", {
       };
     }
 
-    const matches = tracks.map((t, i) => ({
-      index: i + 1,
-      track_name: t.name,
-      artist: t.artists.map((a) => a.name).join(", "),
-      album: t.album.name,
-      release_year: t.album.release_date.substring(0, 4),
-      track_id: t.id,
-      spotify_url: t.external_urls?.spotify ?? null,
-    }));
+    // Fetch ISRC for each match in parallel
+    const matches = await Promise.all(
+      tracks.map(async (t, i) => {
+        let isrc = "Not found";
+        try {
+          const trackResponse = await fetch(
+            `https://api.spotify.com/v1/tracks/${t.id}`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+          const trackData = (await trackResponse.json()) as {
+            external_ids?: { isrc?: string };
+          };
+          isrc = trackData.external_ids?.isrc ?? "Not found";
+        } catch {
+          // If ISRC fetch fails, continue without it
+        }
+
+        return {
+          index: i + 1,
+          track_name: t.name,
+          artist: t.artists.map((a) => a.name).join(", "),
+          album: t.album.name,
+          release_year: t.album.release_date.substring(0, 4),
+          isrc,
+          track_id: t.id,
+          spotify_url: t.external_urls?.spotify ?? null,
+        };
+      })
+    );
 
     return {
       found: true,
